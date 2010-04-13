@@ -5,9 +5,9 @@ module EnginesHelper::Assets
   def propagate
     return if !EnginesHelper.autoload_assets
     plugin_list.each do |plugin|
-      FileUtils.mkdir_p "#{RAILS_ROOT}/public/#{EnginesHelper.plugin_assets_directory}/#{plugin}"
-      Dir.glob("#{RAILS_ROOT}/vendor/plugins/#{plugin}/public/*").each do |asset_path|
-        FileUtils.cp_r(asset_path, "#{RAILS_ROOT}/public/#{EnginesHelper.plugin_assets_directory}/#{plugin}/.")
+      FileUtils.mkdir_p "#{Rails.root}/public/#{EnginesHelper.plugin_assets_directory}/#{plugin}"
+      Dir.glob("#{Rails.root}/vendor/plugins/#{plugin}/public/*").each do |asset_path|
+        FileUtils.cp_r(asset_path, "#{Rails.root}/public/#{EnginesHelper.plugin_assets_directory}/#{plugin}/.")
       end
     end
   end
@@ -21,7 +21,7 @@ module EnginesHelper::Assets
         Sass::Plugin.options[:template_location] => Sass::Plugin.options[:template_location].gsub(/\/sass$/, '') }
       end
       
-      Dir.glob("#{RAILS_ROOT}/public/#{EnginesHelper.plugin_assets_directory}/**/sass") do |sass_dir|
+      Dir.glob("#{Rails.root}/public/#{EnginesHelper.plugin_assets_directory}/**/sass") do |sass_dir|
         Sass::Plugin.options[:template_location] =
           Sass::Plugin.options[:template_location].merge({
           sass_dir => sass_dir.gsub(/\/sass$/, '')
@@ -34,8 +34,8 @@ module EnginesHelper::Assets
 private
   
   def plugin_list
-    Dir.glob("#{RAILS_ROOT}/vendor/plugins/*").reject { |p| 
-      !File.exist?("#{RAILS_ROOT}/vendor/plugins/#{File.basename(p)}/public") 
+    Dir.glob("#{Rails.root}/vendor/plugins/*").reject { |p|
+      !File.exist?("#{Rails.root}/vendor/plugins/#{File.basename(p)}/public")
     }.map { |d| File.basename(d) }
   end
   
